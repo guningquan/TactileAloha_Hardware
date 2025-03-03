@@ -1,0 +1,8 @@
+<launch>
+    <!-- define sensor id parameter -->
+    <param name="sensor_id" type="str" value="D20982" /> 
+    <node pkg="digit_interface" type="digit.py" name="gel" output="screen" >
+    </node>
+
+
+</launch>

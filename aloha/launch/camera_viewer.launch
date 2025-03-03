@@ -1,0 +1,67 @@
+<launch>
+   
+  <node name="usb_cam_high" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/CAM_HIGH" />
+    <param name="framerate" value="60" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <param name="autofocus" value="false"/>
+    <param name="focus" value="5"/>
+    <param name="autoexposure" value="true"/>
+    <!-- <param name="exposure" value="1000" /> -->
+    <param name="gain" value="200" />
+  </node>
+
+  <node name="usb_cam_low" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/CAM_LOW" />
+    <param name="framerate" value="60" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <param name="autofocus" value="false"/>
+<!--     <param name="focus" value="35"/> -->
+    <param name="focus" value="20"/>
+    <param name="autoexposure" value="true"/>
+    <param name="gain" value="200" />
+  </node>
+
+  <node name="usb_cam_left_wrist" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/CAM_LEFT_WRIST" />
+    <param name="framerate" value="60" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <param name="autofocus" value="false"/>
+<!--     <param name="focus" value="40"/>    @ gnq -->
+    <param name="focus" value="30"/>
+    <param name="autoexposure" value="true" />
+    <param name="gain" value="200" />
+    <!-- <param name="exposure" value="800" /> -->
+  </node>
+
+  <node name="usb_cam_right_wrist" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/CAM_RIGHT_WRIST" />
+    <param name="framerate" value="60" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <param name="autofocus" value="false"/>
+    <param name="focus" value="40"/>
+    <param name="autoexposure" value="true"/>
+    <param name="gain" value="200" />
+  </node>
+
+
+  <node name="image_monitor" pkg="main_code" type="image_monitor.py" output="screen" />
+
+
+</launch>
