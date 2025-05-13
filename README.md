@@ -43,19 +43,24 @@ Alternatively, you can run the following commands to automate the installation:
 5. ``sudo apt-get install ros-noetic-usb-cam && sudo apt-get install ros-noetic-cv-bridge``.
 6. run ``catkin_make`` inside ``~/interbotix_ws``, make sure the build is successful.
 
+### 🧱 Material Preparation
+1. Ensure you have the original [ALOHA](https://github.com/tonyzhaozh/aloha) system, which includes at least 4 robots and 3 cameras.
+2. Prepare the additional materials required for TactileAloha. The bill of materials, detailing components costing approximately $450 USD beyond the original ALOHA setup, is available [here](https://docs.google.com/spreadsheets/d/1tX9UN2hUqN1ftezxETeFLI59bT0_g0PbhREX1-UMxE8/edit?usp=sharing).
+3. 3D print the gripper designed for the tactile sensor. The STL file can be found at aloha/3d_models/gelfinger_v2.stl within this repository.
+
 
 ### 🔧 Hardware Installation
 The goal of this section is to run `roslaunch aloha tactile_aloha.launch`, which starts  
 communication with **4 robots**, **3 cameras**, and a **Gelsight tactile sensor**.  
 Follow these steps to ensure it works properly:
 
-1. Install the 4 robots and 3 cameras according to the original [ALOHA](https://github.com/tonyzhaozh/aloha).
+1. We assume you already have the original Aloha system.
 2. ❗ The cameras in the ALOHA series are set to **fixed focus** in ROS launch. The focus value is configured through `tactile_aloha.launch` in `aloha/launch`:  
     ```xml
     <param name="focus" value="40"/>
     ```
    It is necessary to determine the appropriate focus value for each camera; otherwise, the camera image may appear blurry during manipulation.
-    The method to get suitable focus value is:
+    The method to get suitable camera focus value is:
     - To check the available video devices, run the following command: ls /dev/video* ;
     - Use the following command to open the camera and adjust the focus: guvcview -d /dev/video0 ;
     - Test and note the appropriate focus value for each camera ;
@@ -72,8 +77,8 @@ Follow these steps to ensure it works properly:
     ```
    You need to reset the `focus_automatic_continuous` value when you reboot your computer or replug the cameras.
 
-4. Install the GelSight tactile sensor with the 3D-printed model in the `/aloha/models` directory. We recommend using a [right-angle micro USB cable](https://www.amazon.co.jp/dp/B00ENZDFQ4?ref=ppx_yo2ov_dt_b_fed_asin_title) to connect the sensor with computer, which could reduce collision risk during manipulation. 
-Moreover, we install [noise absorbers](https://www.amazon.co.jp/-/en/gp/product/B0CP491LJR/ref=ewc_pr_img_2?smid=A19BPWQK30Q73P&th=1) for the tactile sensor cable.
+4. Install the GelSight tactile sensor with the 3D-printed model in the `/aloha/3d_models` directory. We recommend using the [right-angle micro USB cable](https://www.amazon.co.jp/dp/B00ENZDFQ4?ref=ppx_yo2ov_dt_b_fed_asin_title) to connect the sensor with computer, which could reduce collision risk during manipulation. 
+Moreover, we install the [noise absorbers](https://www.amazon.co.jp/-/en/gp/product/B0CP491LJR/ref=ewc_pr_img_2?smid=A19BPWQK30Q73P&th=1) for the tactile sensor cable.
 
 5. ⚠️ After installing the tactile sensor, you need to update the `sensor_id` in `tactile_aloha.launch` with a series string like `D20982`.  
 In our project, we only utilize one GelSight sensor. If you would like to use multiple GelSight sensors, you can set the `sensor_id` like `D20982_D20983`.  
