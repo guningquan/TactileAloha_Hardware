@@ -207,7 +207,7 @@ def main():
 
         # Check if all images are received; if not, fill with the blank image
         filled_images = {}
-        for name in ['cam_high', 'cam_low', 'gel', 'cam_left_wrist', 'cam_right_wrist']:
+        for name in ['cam_high', 'cam_low', 'gel', 'cam_left_wrist', 'cam_right_wrist']:  # could expend gel02
             if images.get(name) is not None:  # If the image exists
                 filled_images[name] = cv2.resize(images[name], target_size)  # Resize the image
             else:  # If the image is missing
