@@ -54,28 +54,77 @@ The goal of this section is to run `roslaunch aloha tactile_aloha.launch`, which
 communication with **4 robots**, **3 cameras**, and a **Gelsight tactile sensor**.  
 Follow these steps to ensure it works properly:
 
-1. We assume you already have the original Aloha system.
-2. ❗ The cameras in the ALOHA series are set to **fixed focus** in ROS launch. The focus value is configured through `tactile_aloha.launch` in `aloha/launch`:  
+1. We assume you already have the original ALOHA system.
+
+2. `❗` Camera Focus Configuration (Not described in ALOHA):
+
+   The cameras in the ALOHA series are set to **fixed focus** in ROS launch. 
+The focus value is configured through `aloha.launch` in `aloha/launch`:  
     ```xml
     <param name="focus" value="40"/>
     ```
    It is necessary to determine the appropriate focus value for each camera; otherwise, the camera image may appear blurry during manipulation.
-    The method to get suitable camera focus value is:
-    - To check the available video devices, run the following command: ls /dev/video* ;
-    - Use the following command to open the camera and adjust the focus: guvcview -d /dev/video0 ;
+
+    The recommended procedure to find a suitable focus value is:
+    - To check the available video devices, run the following command: 
+   ``` bash
+     ls /dev/CAM_*  # or ls /dev/video*
+   ```   
+    If you have set your camera serial numbers according to [ALOHA](https://github.com/tonyzhaozh/aloha), you can see your camera list as follows:
+   ``` bash
+     /dev/CAM_HIGH  /dev/CAM_LEFT_WRIST   /dev/CAM_RIGHT_WRIST
+   ```  
+   
+    - Use the following command to open the camera and adjust the focus: 
+   ``` bash
+     guvcview -d /dev/CAM_HIGH
+   ```
     - Test and note the appropriate focus value for each camera ;
 
-3. ❗ It is necessary to shut down the auto focus by seting the focus_automatic_continuous value of the camera as follows:
+3. `❗` Disable Auto Focus:
+
+   - You must disable the continuous autofocus by setting the focus_automatic_continuous control parameter as follows:
     ```bash
-    v4l2-ctl -d /dev/video0 --set-ctrl focus_automatic_continuous=0
+      v4l2-ctl -d /dev/CAM_HIGH --set-ctrl focus_automatic_continuous=0
     ```
-    For other cameras please modifiy `/dev/video0` to  `/dev/video2`, `/dev/video4`, etc.
-    The way to check whether we have set the camera correctly is to run `roslaunch aloha tactile_aloha.launch` and ensure that no warning like this appears:
+    - For other cameras please modifiy `/dev/CAM_HIGH` to `/dev/CAM_LEFT_WRIST`, etc.
+    - The way to check whether we have set the camera correctly is to run `roslaunch aloha aloha.launch` and ensure that no warning like this appears:
     ```bash
     Error setting controls: Permission denied
     VIDIOC_S_EXT_CTRLS: failed: Permission denied
     ```
-   You need to reset the `focus_automatic_continuous` value when you reboot your computer or replug the cameras.
+   - You can add the following to your `.bashrc`, which allows you to conveniently run `cameras-autofocus` from the command line.
+   ```bash
+   # Define the cameras-autofocus function to disable autofocus
+   cameras-autofocus() {
+       # List of camera devices to configure
+       cameras=("/dev/CAM_HIGH" "/dev/CAM_LEFT_WRIST" "/dev/CAM_RIGHT_WRIST")
+   
+       # Function to disable autofocus for a single camera
+       disable_autofocus() {
+           local camera=$1
+           echo "Disabling autofocus for $camera..."
+           
+           # Disable automatic continuous focus
+           v4l2-ctl -d "$camera" --set-ctrl focus_automatic_continuous=0
+   
+           echo "Autofocus disabled for $camera."
+       }
+   
+       # Main loop to process all cameras
+       echo "Configuring autofocus for cameras..."
+       for cam in "${cameras[@]}"; do
+           if [ -e "$cam" ]; then
+               disable_autofocus "$cam"
+           else
+               echo "Camera $cam not found. Skipping."
+           fi
+       done
+       echo "Autofocus configuration complete."
+   }
+    ```
+   Note: You will need to reapply the focus_automatic_continuous=0 setting whenever you reboot the computer or unplug and replug the cameras.
+
 
 4. Install the GelSight tactile sensor with the 3D-printed model in the `/aloha/3d_models` directory. We recommend using the [right-angle micro USB cable](https://www.amazon.co.jp/dp/B00ENZDFQ4?ref=ppx_yo2ov_dt_b_fed_asin_title) to connect the sensor with computer, which could reduce collision risk during manipulation. 
 Moreover, we install the [noise absorbers](https://www.amazon.co.jp/-/en/gp/product/B0CP491LJR/ref=ewc_pr_img_2?smid=A19BPWQK30Q73P&th=1) for the tactile sensor cable.
